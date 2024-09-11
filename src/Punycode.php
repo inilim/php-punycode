@@ -1,9 +1,9 @@
 <?php
 
-namespace TrueBV;
+namespace Inilim\PunyCode;
 
-use TrueBV\Exception\DomainOutOfBoundsException;
-use TrueBV\Exception\LabelOutOfBoundsException;
+use Inilim\PunyCode\Exception\DomainOutOfBoundsException;
+use Inilim\PunyCode\Exception\LabelOutOfBoundsException;
 
 /**
  * Punycode implementation as described in RFC 3492
