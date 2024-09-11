@@ -1,5 +1,5 @@
 {
-    "name": "true/punycode",
+    "name": "inilim/php-punycode",
     "description": "A Bootstring encoding of Unicode for Internationalized Domain Names in Applications (IDNA)",
     "keywords": [
         "IDNA",
