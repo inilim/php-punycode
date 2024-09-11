@@ -1,4 +1,5 @@
 <?php
+
 namespace TrueBV;
 
 use TrueBV\Exception\DomainOutOfBoundsException;
@@ -6,7 +7,6 @@ use TrueBV\Exception\LabelOutOfBoundsException;
 
 /**
  * Punycode implementation as described in RFC 3492
- *
  * @link http://tools.ietf.org/html/rfc3492
  */
 class Punycode
@@ -14,7 +14,6 @@ class Punycode
 
     /**
      * Bootstring parameter values
-     *
      */
     const BASE         = 36;
     const TMIN         = 1;
@@ -31,25 +30,88 @@ class Punycode
      *
      * @param array
      */
-    protected static $encodeTable = array(
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-        'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-        'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    );
+    protected static $encodeTable = [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z',
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+    ];
 
     /**
      * Decode table
      *
      * @param array
      */
-    protected static $decodeTable = array(
-        'a' =>  0, 'b' =>  1, 'c' =>  2, 'd' =>  3, 'e' =>  4, 'f' =>  5,
-        'g' =>  6, 'h' =>  7, 'i' =>  8, 'j' =>  9, 'k' => 10, 'l' => 11,
-        'm' => 12, 'n' => 13, 'o' => 14, 'p' => 15, 'q' => 16, 'r' => 17,
-        's' => 18, 't' => 19, 'u' => 20, 'v' => 21, 'w' => 22, 'x' => 23,
-        'y' => 24, 'z' => 25, '0' => 26, '1' => 27, '2' => 28, '3' => 29,
-        '4' => 30, '5' => 31, '6' => 32, '7' => 33, '8' => 34, '9' => 35
-    );
+    protected static $decodeTable = [
+        'a' =>  0,
+        'b' =>  1,
+        'c' =>  2,
+        'd' =>  3,
+        'e' =>  4,
+        'f' =>  5,
+        'g' =>  6,
+        'h' =>  7,
+        'i' =>  8,
+        'j' =>  9,
+        'k' => 10,
+        'l' => 11,
+        'm' => 12,
+        'n' => 13,
+        'o' => 14,
+        'p' => 15,
+        'q' => 16,
+        'r' => 17,
+        's' => 18,
+        't' => 19,
+        'u' => 20,
+        'v' => 21,
+        'w' => 22,
+        'x' => 23,
+        'y' => 24,
+        'z' => 25,
+        '0' => 26,
+        '1' => 27,
+        '2' => 28,
+        '3' => 29,
+        '4' => 30,
+        '5' => 31,
+        '6' => 32,
+        '7' => 33,
+        '8' => 34,
+        '9' => 35
+    ];
 
     /**
      * Character encoding
@@ -63,7 +125,7 @@ class Punycode
      *
      * @param string $encoding Character encoding
      */
-    public function __construct($encoding = 'UTF-8')
+    function __construct($encoding = 'UTF-8')
     {
         $this->encoding = $encoding;
     }
@@ -74,21 +136,21 @@ class Punycode
      * @param string $input Domain name in Unicode to be encoded
      * @return string Punycode representation in ASCII
      */
-    public function encode($input)
+    function encode($input)
     {
-        $input = mb_strtolower($input, $this->encoding);
-        $parts = explode('.', $input);
+        $input = \mb_strtolower($input, $this->encoding);
+        $parts = \explode('.', $input);
         foreach ($parts as &$part) {
-            $length = strlen($part);
+            $length = \strlen($part);
             if ($length < 1) {
-                throw new LabelOutOfBoundsException(sprintf('The length of any one label is limited to between 1 and 63 octets, but %s given.', $length));
+                throw new LabelOutOfBoundsException(\sprintf('The length of any one label is limited to between 1 and 63 octets, but %s given.', $length));
             }
             $part = $this->encodePart($part);
         }
-        $output = implode('.', $parts);
-        $length = strlen($output);
+        $output = \implode('.', $parts);
+        $length = \strlen($output);
         if ($length > 255) {
-            throw new DomainOutOfBoundsException(sprintf('A full domain name is limited to 255 octets (including the separators), %s given.', $length));
+            throw new DomainOutOfBoundsException(\sprintf('A full domain name is limited to 255 octets (including the separators), %s given.', $length));
         }
 
         return $output;
@@ -107,7 +169,7 @@ class Punycode
         $n = static::INITIAL_N;
         $bias = static::INITIAL_BIAS;
         $delta = 0;
-        $h = $b = count($codePoints['basic']);
+        $h = $b = \count($codePoints['basic']);
 
         $output = '';
         foreach ($codePoints['basic'] as $code) {
@@ -120,11 +182,12 @@ class Punycode
             $output .= static::DELIMITER;
         }
 
-        $codePoints['nonBasic'] = array_unique($codePoints['nonBasic']);
-        sort($codePoints['nonBasic']);
+        // $codePoints['nonBasic'] = \array_unique($codePoints['nonBasic']);
+        $codePoints['nonBasic'] =  \array_keys(\array_flip($codePoints['nonBasic']));
+        \sort($codePoints['nonBasic']);
 
         $i = 0;
-        $length = mb_strlen($input, $this->encoding);
+        $length = \mb_strlen($input, $this->encoding);
         while ($h < $length) {
             $m = $codePoints['nonBasic'][$i++];
             $delta = $delta + ($m - $n) * ($h + 1);
@@ -159,9 +222,9 @@ class Punycode
             $n++;
         }
         $out = static::PREFIX . $output;
-        $length = strlen($out);
+        $length = \strlen($out);
         if ($length > 63 || $length < 1) {
-            throw new LabelOutOfBoundsException(sprintf('The length of any one label is limited to between 1 and 63 octets, but %s given.', $length));
+            throw new LabelOutOfBoundsException(\sprintf('The length of any one label is limited to between 1 and 63 octets, but %s given.', $length));
         }
 
         return $out;
@@ -173,26 +236,26 @@ class Punycode
      * @param string $input Domain name in Punycode
      * @return string Unicode domain name
      */
-    public function decode($input)
+    function decode($input)
     {
-        $input = strtolower($input);
-        $parts = explode('.', $input);
+        $input = \strtolower($input);
+        $parts = \explode('.', $input);
         foreach ($parts as &$part) {
-            $length = strlen($part);
+            $length = \strlen($part);
             if ($length > 63 || $length < 1) {
-                throw new LabelOutOfBoundsException(sprintf('The length of any one label is limited to between 1 and 63 octets, but %s given.', $length));
+                throw new LabelOutOfBoundsException(\sprintf('The length of any one label is limited to between 1 and 63 octets, but %s given.', $length));
             }
-            if (strpos($part, static::PREFIX) !== 0) {
+            if (\strpos($part, static::PREFIX) !== 0) {
                 continue;
             }
 
-            $part = substr($part, strlen(static::PREFIX));
+            $part = \substr($part, \strlen(static::PREFIX));
             $part = $this->decodePart($part);
         }
-        $output = implode('.', $parts);
-        $length = strlen($output);
+        $output = \implode('.', $parts);
+        $length = \strlen($output);
         if ($length > 255) {
-            throw new DomainOutOfBoundsException(sprintf('A full domain name is limited to 255 octets (including the separators), %s given.', $length));
+            throw new DomainOutOfBoundsException(\sprintf('A full domain name is limited to 255 octets (including the separators), %s given.', $length));
         }
 
         return $output;
@@ -211,15 +274,15 @@ class Punycode
         $bias = static::INITIAL_BIAS;
         $output = '';
 
-        $pos = strrpos($input, static::DELIMITER);
+        $pos = \strrpos($input, static::DELIMITER);
         if ($pos !== false) {
-            $output = substr($input, 0, $pos++);
+            $output = \substr($input, 0, $pos++);
         } else {
             $pos = 0;
         }
 
-        $outputLength = strlen($output);
-        $inputLength = strlen($input);
+        $outputLength = \strlen($output);
+        $inputLength = \strlen($input);
         while ($pos < $inputLength) {
             $oldi = $i;
             $w = 1;
@@ -239,7 +302,7 @@ class Punycode
             $bias = $this->adapt($i - $oldi, ++$outputLength, ($oldi === 0));
             $n = $n + (int) ($i / $outputLength);
             $i = $i % ($outputLength);
-            $output = mb_substr($output, 0, $i, $this->encoding) . $this->codePointToChar($n) . mb_substr($output, $i, $outputLength - 1, $this->encoding);
+            $output = \mb_substr($output, 0, $i, $this->encoding) . $this->codePointToChar($n) . \mb_substr($output, $i, $outputLength - 1, $this->encoding);
 
             $i++;
         }
@@ -276,9 +339,9 @@ class Punycode
     {
         $delta = (int) (
             ($firstTime)
-                ? $delta / static::DAMP
-                : $delta / 2
-            );
+            ? $delta / static::DAMP
+            : $delta / 2
+        );
         $delta += (int) ($delta / $numPoints);
 
         $k = 0;
@@ -299,15 +362,15 @@ class Punycode
      */
     protected function listCodePoints($input)
     {
-        $codePoints = array(
-            'all'      => array(),
-            'basic'    => array(),
-            'nonBasic' => array(),
-        );
+        $codePoints = [
+            'all'      => [],
+            'basic'    => [],
+            'nonBasic' => [],
+        ];
 
-        $length = mb_strlen($input, $this->encoding);
+        $length = \mb_strlen($input, $this->encoding);
         for ($i = 0; $i < $length; $i++) {
-            $char = mb_substr($input, $i, 1, $this->encoding);
+            $char = \mb_substr($input, $i, 1, $this->encoding);
             $code = $this->charToCodePoint($char);
             if ($code < 128) {
                 $codePoints['all'][] = $codePoints['basic'][] = $code;
@@ -327,15 +390,15 @@ class Punycode
      */
     protected function charToCodePoint($char)
     {
-        $code = ord($char[0]);
+        $code = \ord($char[0]);
         if ($code < 128) {
             return $code;
         } elseif ($code < 224) {
-            return (($code - 192) * 64) + (ord($char[1]) - 128);
+            return (($code - 192) * 64) + (\ord($char[1]) - 128);
         } elseif ($code < 240) {
-            return (($code - 224) * 4096) + ((ord($char[1]) - 128) * 64) + (ord($char[2]) - 128);
+            return (($code - 224) * 4096) + ((\ord($char[1]) - 128) * 64) + (\ord($char[2]) - 128);
         } else {
-            return (($code - 240) * 262144) + ((ord($char[1]) - 128) * 4096) + ((ord($char[2]) - 128) * 64) + (ord($char[3]) - 128);
+            return (($code - 240) * 262144) + ((\ord($char[1]) - 128) * 4096) + ((\ord($char[2]) - 128) * 64) + (\ord($char[3]) - 128);
         }
     }
 
@@ -348,13 +411,13 @@ class Punycode
     protected function codePointToChar($code)
     {
         if ($code <= 0x7F) {
-            return chr($code);
+            return \chr($code);
         } elseif ($code <= 0x7FF) {
-            return chr(($code >> 6) + 192) . chr(($code & 63) + 128);
+            return \chr(($code >> 6) + 192) . \chr(($code & 63) + 128);
         } elseif ($code <= 0xFFFF) {
-            return chr(($code >> 12) + 224) . chr((($code >> 6) & 63) + 128) . chr(($code & 63) + 128);
+            return \chr(($code >> 12) + 224) . \chr((($code >> 6) & 63) + 128) . \chr(($code & 63) + 128);
         } else {
-            return chr(($code >> 18) + 240) . chr((($code >> 12) & 63) + 128) . chr((($code >> 6) & 63) + 128) . chr(($code & 63) + 128);
+            return \chr(($code >> 18) + 240) . \chr((($code >> 12) & 63) + 128) . \chr((($code >> 6) & 63) + 128) . \chr(($code & 63) + 128);
         }
     }
 }
