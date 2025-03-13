@@ -19,8 +19,7 @@
         }
     },
     "require": {
-        "symfony/polyfill-mbstring": "^1.3",
-        "php": "^8.2"
+        "php": ">=8.2"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.7",

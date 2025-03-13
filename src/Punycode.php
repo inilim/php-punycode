@@ -15,15 +15,15 @@ class Punycode
     /**
      * Bootstring parameter values
      */
-    const BASE         = 36;
-    const TMIN         = 1;
-    const TMAX         = 26;
-    const SKEW         = 38;
-    const DAMP         = 700;
-    const INITIAL_BIAS = 72;
-    const INITIAL_N    = 128;
-    const PREFIX       = 'xn--';
-    const DELIMITER    = '-';
+    const BASE         = 36,
+        TMIN         = 1,
+        TMAX         = 26,
+        SKEW         = 38,
+        DAMP         = 700,
+        INITIAL_BIAS = 72,
+        INITIAL_N    = 128,
+        PREFIX       = 'xn--',
+        DELIMITER    = '-';
 
     /**
      * Encode table
